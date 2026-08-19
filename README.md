@@ -14,7 +14,23 @@ Modelos-predictivos/
 │   └── archive/housing.csv    # Dataset
 ├── wine-quality/              # (pendiente) Calidad del vino
 └── diabetes/                  # (pendiente) Diabetes
-```
+|____diabetes-regresion-polinomial/         # Caso 3: Diabetes (Regresión Polinomial + Ridge)
+│   ├── Taller 1/                      # Dataset fuente original
+│   ├── data/                          # Módulo de preprocesamiento
+│   │   ├── process_data.py            # EDA, tratamiento de outliers, VIF y escalado
+│   │   └── scaler.joblib              # Escalador guardado (StandardScaler)
+│   ├── models/                        # Módulo de entrenamiento estadístico
+│   │   ├── train_models.py            # Entrenamiento de Regresión Polinomial (Grado 2 + Ridge)
+│   │   └── best_diabetes_model.joblib # Modelo polinomial final optimizado y guardado
+│   ├── app/                           # Aplicativo multi-caso en Streamlit
+│   │   ├── app.py                     # Interfaz principal y menú de navegación
+│   │   └── components/
+│   │       └── case3_ui.py            # Vista específica en Streamlit para Diabetes
+│   ├── static/
+│   │   └── estilos_diabetes.css       # Hoja de estilos CSS (diseño de sliders y badges)
+│   ├── templates/
+│   │   └── vista_diabetes.html        # Dashboard clínico HTML5 con controles interactivos
+│   ├── run_preview.py                 # Servidor Flask para conectar el HT
 
 ## California Housing
 
@@ -29,6 +45,14 @@ python app.py
 ```
 
 Abrir http://localhost:7860
+
+## Diabetes
+###Ejecutar localmente (Regresion Polimonial)
+python data/process_data.py
+python models/train_models.py
+python run_preview.py
+
+Abrir: http://127.0.0.1:5000
 
 ### Desplegar en Render (gratis)
 
