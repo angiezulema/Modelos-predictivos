@@ -1,0 +1,450 @@
+/* =========================================================================
+   estilos_diabetes.css
+   Hoja de estilos personalizada — "Panel Clínico de Evaluación de Diabetes"
+
+   Paleta: azules clínicos, blancos, grises y acentos menta/cian.
+   Formulario de deslizadores estilo dashboard clínico con badges de valor
+   en tiempo real, distribución responsiva en cuadrícula y micro-animaciones.
+   ========================================================================= */
+
+:root {
+    --primary: #0b5ed7;
+    --primary-dark: #084298;
+    --primary-light: #cfe2ff;
+    --accent: #1fb6a3;
+    --mint-soft: #a8f0e5;
+    --mint-track: #a8f0e5;
+    --mint-thumb: #16b3a0;
+    --mint-thumb-dark: #0f9c8c;
+    --mint-badge-bg: #d1f7f1;
+    --mint-badge-text: #0e8f7f;
+    --bg: #eef3f9;
+    --card-bg: #ffffff;
+    --text: #1f2937;
+    --text-muted: #6b7280;
+    --border: #d9e2ec;
+    --success: #198754;
+    --success-bg: #d1e7dd;
+    --warning: #b45f06;
+    --warning-bg: #fff3cd;
+    --danger: #b02a37;
+    --danger-bg: #f8d7da;
+    --shadow-sm: 0 1px 3px rgba(16, 42, 90, 0.08);
+    --shadow-md: 0 6px 18px rgba(16, 42, 90, 0.14);
+    --shadow-lg: 0 14px 34px rgba(16, 42, 90, 0.18);
+    --radius: 14px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(160deg, var(--bg) 0%, #dfe9f6 100%);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.5;
+}
+
+/* ------------------------------------------------------------------------- *
+ *  Cabecera del panel
+ * ------------------------------------------------------------------------- */
+.panel-header {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 55%, #2f7ee0 100%);
+    color: #fff;
+    padding: 2.4rem 1.5rem 2rem;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+}
+
+.panel-header h1 {
+    font-size: clamp(1.5rem, 3.2vw, 2.4rem);
+    letter-spacing: 0.4px;
+}
+
+.panel-header p {
+    margin-top: 0.5rem;
+    color: #dbe7fb;
+    font-size: clamp(0.9rem, 1.6vw, 1.05rem);
+}
+
+.badge-strip {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1rem;
+}
+
+.badge-strip span {
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+    padding: 0.28rem 0.9rem;
+    font-size: 0.8rem;
+    backdrop-filter: blur(4px);
+}
+
+/* ------------------------------------------------------------------------- *
+ *  Layout general
+ * ------------------------------------------------------------------------- */
+main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 3rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 1.4rem 1.6rem;
+}
+
+/* ------------------------------------------------------------------------- *
+ *  Tarjetas
+ * ------------------------------------------------------------------------- */
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    padding: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.card-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+    margin-bottom: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ambit {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 1.3rem;
+}
+
+/* ------------------------------------------------------------------------- *
+ *  Campo de formulario con deslizador
+ * ------------------------------------------------------------------------- */
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    padding: 0.25rem 0;
+}
+
+.field-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-field label {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+/* --- Badge (pill) de valor en tiempo real --- */
+.value-badge {
+    background: var(--mint-badge-bg);
+    color: var(--mint-badge-text);
+    font-weight: bold;
+    border-radius: 12px;
+    padding: 0.22rem 0.85rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    min-width: 74px;
+    text-align: center;
+    box-shadow: inset 0 0 0 1px var(--mint-soft), 0 2px 6px rgba(14, 143, 127, 0.18);
+    transition: box-shadow 0.15s ease;
+}
+
+.value-badge.bump {
+    animation: badge-bump 0.25s ease;
+}
+
+@keyframes badge-bump {
+    0%   { transform: scale(1); }
+    45%  { transform: scale(1.14); }
+    100% { transform: scale(1); }
+}
+
+/* --- Slider (track de relleno menta/cian) --- */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 10px;
+    border-radius: 999px;
+    background: linear-gradient(to right,
+        var(--mint-track) 0%,
+        var(--mint-track) var(--pct, 50%),
+        #e4ecf5 var(--pct, 50%),
+        #e4ecf5 100%);
+    outline: none;
+    box-shadow: inset 0 1px 3px rgba(16, 42, 90, 0.14);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+/* Thumb — WebKit/Blink */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 32% 28%, #8ff0e2, var(--mint-thumb) 62%, var(--mint-thumb-dark));
+    border: 3px solid #ffffff;
+    box-shadow: 0 3px 8px rgba(15, 130, 115, 0.4);
+    cursor: grab;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.14);
+    box-shadow: 0 4px 12px rgba(15, 130, 115, 0.5);
+}
+
+input[type="range"]:active::-webkit-slider-thumb {
+    transform: scale(1.02);
+    cursor: grabbing;
+}
+
+input[type="range"]:focus-visible::-webkit-slider-thumb {
+    box-shadow: 0 0 0 4px rgba(22, 179, 160, 0.35), 0 4px 12px rgba(15, 130, 115, 0.5);
+}
+
+/* Thumb — Firefox */
+input[type="range"]::-moz-range-track {
+    background: transparent;
+    height: 10px;
+    border-radius: 999px;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 32% 28%, #8ff0e2, var(--mint-thumb) 62%, var(--mint-thumb-dark));
+    border: 3px solid #ffffff;
+    box-shadow: 0 3px 8px rgba(15, 130, 115, 0.4);
+    cursor: grab;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+input[type="range"]:active::-moz-range-thumb {
+    transform: scale(1.02);
+    cursor: grabbing;
+}
+
+/* --- Límites mín / máx de cada deslizador --- */
+.range-limits {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.74rem;
+    color: var(--text-muted);
+}
+
+.range-limits span {
+    font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------------------------- *
+ *  Acciones
+ * ------------------------------------------------------------------------- */
+.actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.8rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: #fff;
+    font-size: 1.05rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    padding: 0.85rem 3rem;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: var(--shadow-lg);
+    filter: brightness(1.08);
+}
+
+.btn-primary:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-primary .spin {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    border: 3px solid rgba(255, 255, 255, 0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    vertical-align: middle;
+    margin-right: 0.5rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ------------------------------------------------------------------------- *
+ *  Tarjeta de resultado
+ * ------------------------------------------------------------------------- */
+.result-card {
+    margin-top: 2rem;
+    border-left: 6px solid var(--primary);
+    animation: fadeSlide 0.5s ease;
+}
+
+@keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.result-card.is-success { border-left-color: var(--success); }
+.result-card.is-warning { border-left-color: var(--warning); }
+.result-card.is-danger  { border-left-color: var(--danger); }
+
+.result-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.result-label {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.result-value {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    color: var(--primary-dark);
+    line-height: 1;
+}
+
+.chip {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 0.35rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.chip.is-success { background: var(--success-bg); color: var(--success); }
+.chip.is-warning { background: var(--warning-bg); color: var(--warning); }
+.chip.is-danger  { background: var(--danger-bg); color: var(--danger); }
+
+.range-hint {
+    margin-top: 0.75rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    border-top: 1px dashed var(--border);
+    padding-top: 0.6rem;
+}
+
+/* --- Indicador del modelo/pipeline en uso --- */
+.model-indicator {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    background: linear-gradient(135deg, var(--primary-light) 0%, #e8f1fc 100%);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.65rem 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+}
+
+.model-indicator .marker {
+    font-size: 1.05rem;
+    line-height: 1;
+}
+
+.model-indicator .mini {
+    background: #ffffff;
+    color: var(--mint-badge-text);
+    border: 1px solid var(--mint-soft);
+    border-radius: 999px;
+    padding: 0.2rem 0.7rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.model-indicator .mini sup {
+    font-size: 0.6rem;
+}
+
+.error-box {
+    margin-top: 1.4rem;
+    background: var(--danger-bg);
+    color: var(--danger);
+    border-left: 6px solid var(--danger);
+    border-radius: 10px;
+    padding: 0.9rem 1.1rem;
+    font-size: 0.9rem;
+}
+
+/* ------------------------------------------------------------------------- *
+ *  Pie de página
+ * ------------------------------------------------------------------------- */
+footer {
+    text-align: center;
+    padding: 1.5rem;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    border-top: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.6);
+}
+
+/* ------------------------------------------------------------------------- *
+ *  Responsive
+ * ------------------------------------------------------------------------- */
+@media (max-width: 560px) {
+    .panel-header { padding: 1.8rem 0.9rem 1.5rem; }
+    main { padding: 1.5rem 0.9rem 2.4rem; }
+    .btn-primary { width: 100%; }
+}

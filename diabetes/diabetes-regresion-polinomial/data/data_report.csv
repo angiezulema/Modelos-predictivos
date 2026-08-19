@@ -1,0 +1,2 @@
+source_file,n_rows,n_features,test_size,seed,outliers_treated
+Taller_1/diabetes,442,10,0.2,42,True

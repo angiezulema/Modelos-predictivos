@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel Clínico de Evaluación de Diabetes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='estilos_diabetes.css') }}" />
+</head>
+<body>
+
+    <header class="panel-header">
+        <h1>Panel Clínico de Evaluación de Diabetes</h1>
+        <p>Estimación cuantitativa de la progresión de la enfermedad a un año del diagnóstico</p>
+        <div class="badge-strip">
+            <span>Modelo: Ridge · Polinomial grado 2</span>
+            <span>441 pacientes entrenados</span>
+            <span>10 variables basales</span>
+        </div>
+    </header>
+
+    <main>
+        <form id="form-diabetes">
+            <div class="card">
+                <div class="card-title">&#128202; Variables Basales del Paciente</div>
+                <p class="ambit">Ajuste cada deslizador al valor medido. El badge superior refleja el
+                    valor seleccionado en tiempo real. Los extremos indican el rango válido del dataset.</p>
+
+                <div class="grid">
+                    <div class="form-field">
+                        <div class="field-head">
+                            <label for="AGE">Edad (años)</label>
+                            <span class="value-badge" id="badge-AGE">49</span>
+                        </div>
+                        <input type="range" id="AGE" name="AGE"
+                               min="19" max="79" step="1" value="49"
+                               data-decimals="0" aria-label="Edad en años" />
+                        <div class="range-limits"><span>19</span><span>79</span></div>
+                    </div>
+
+                    <div class="form-field">
+                        <div class="field-head">
+                            <label for="SEX">Sexo</label>
+                            <span class="value-badge" id="badge-SEX">Hombre (1)</span>
+                        </div>
+                        <input type="range" id="SEX" name="SEX"
+                               min="1" max="2" step="1" value="1"
+                               data-sex="1" aria-label="Sexo: 1 hombre, 2 mujer" />
+                        <div class="range-limits"><span>Hombre (1)</span><span>Mujer (2)</span></div>
+                    </div>
+
+                    <div class="form-field">
+                        <div class="field-head">
+                            <label for="BMI">IMC (kg/m²)</label>
+                            <span class="value-badge" id="badge-BMI">26.4</span>
+                        </div>
+                        <input type="range" id="BMI" name="BMI"
+                               min="18" max="42.2" step="0.1" value="26.4"
+                               data-decimals="1" aria-label="Índice de masa corporal" />
+                        <div class="range-limits"><span>18.0</span><span>42.2</span></div>
+                    </div>
+
+                    <div class="form-field">
+                        <div class="field-head">
+                            <label for="BP">Presión Arterial Media</label>
+                            <span class="value-badge" id="badge-BP">95.0</span>
+                        </div>
+                        <input type="range" id="BP" name="BP"
+                               min="60" max="140" step="0.5" value="95"
+                               data-decimals="1" aria-label="Presión arterial media" />
+                        <div class="range-limits"><span>60.0</span><span>140.0</span></div>
+                    </div>
+
+                    <div class="form-field">
+                        <div class="field-head">
+                            <label for="S1">Suero S1 — tcells</label>
+                            <span class="value-badge" id="badge-S1">189</span>
+                        </div>
+                        <input type="range" id="S1" name="S1"
+                               min="97" max="301" step="1" value="189"
+                               data-decimals="0" aria-label="Suero S1 tcells" />
+                        <div class="range-limits"><span>97</span><span>301</span></div>
+                    </div>
+
+                    <div class="form-field">
+                        <div class="field-head">
+                            <label for="S2">Suero S2 — ldl</label>
+                            <span class="value-badge" id="badge-S2">115.4</span>
+                        </div>
+                        <input type="range" id="S2" name="S2"
+                               min="41.6" max="242.4" step="0.1" value="115.4"
+                               data-decimals="1" aria-label="Suero S2 ldl" />
+                        <div class="range-limits"><span>41.6</span><span>242.4</span></div>
+                    </div>
+
+                    <div class="form-field">
+                        <div class="field-head">
+                            <label for="S3">Suero S3 — hdl</label>
+                            <span class="value-badge" id="badge-S3">50</span>
+                        </div>
+                        <input type="range" id="S3" name="S3"
+                               min="22" max="99" step="1" value="50"
+                               data-decimals="0" aria-label="Suero S3 hdl" />
+                        <div class="range-limits"><span>22</span><span>99</span></div>
+                    </div>
+
+                    <div class="form-field">
+                        <div class="field-head">
+                            <label for="S4">Suero S4 — tch/ldl</label>
+                            <span class="value-badge" id="badge-S4">4.07</span>
+                        </div>
+                        <input type="range" id="S4" name="S4"
+                               min="2" max="9.09" step="0.01" value="4.07"
+                               data-decimals="2" aria-label="Suero S4 ratio tch ldl" />
+                        <div class="range-limits"><span>2.00</span><span>9.09</span></div>
+                    </div>
+
+                    <div class="form-field">
+                        <div class="field-head">
+                            <label for="S5">Suero S5 — ltg (glucemia)</label>
+                            <span class="value-badge" id="badge-S5">4.64</span>
+                        </div>
+                        <input type="range" id="S5" name="S5"
+                               min="3.258" max="6.107" step="0.001" value="4.64"
+                               data-decimals="3" aria-label="Suero S5 glucemia log" />
+                        <div class="range-limits"><span>3.258</span><span>6.107</span></div>
+                    </div>
+
+                    <div class="form-field">
+                        <div class="field-head">
+                            <label for="S6">Suero S6 — glu (insulina)</label>
+                            <span class="value-badge" id="badge-S6">91</span>
+                        </div>
+                        <input type="range" id="S6" name="S6"
+                               min="58" max="124" step="1" value="91"
+                               data-decimals="0" aria-label="Suero S6 insulina" />
+                        <div class="range-limits"><span>58</span><span>124</span></div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button type="submit" id="btn-calcular" class="btn-primary">Calcular Progresión</button>
+                </div>
+            </div>
+        </form>
+
+        <div id="resultado" class="card result-card" hidden>
+            <div class="result-meta">
+                <div>
+                    <div class="result-label">Progresión estimada de la enfermedad (Y)</div>
+                    <div class="result-value" id="resultado-valor">—</div>
+                </div>
+                <span class="chip" id="resultado-chip">—</span>
+            </div>
+            <div class="model-indicator" id="resultado-modelo"></div>
+            <p class="range-hint" id="resultado-desc"></p>
+        </div>
+
+        <div class="error-box" id="error-box" hidden></div>
+    </main>
+
+    <footer>
+        Panel Clínico de Evaluación de Diabetes · Pipeline ML · StandardScaler + PolynomialFeatures (d=2) + Ridge
+    </footer>
+
+    <script>
+        (function () {
+            "use strict";
+
+            const form = document.getElementById("form-diabetes");
+            const btnCalcular = document.getElementById("btn-calcular");
+            const resultado = document.getElementById("resultado");
+            const resultadoValor = document.getElementById("resultado-valor");
+            const resultadoChip = document.getElementById("resultado-chip");
+            const resultadoDesc = document.getElementById("resultado-desc");
+            const resultadoModelo = document.getElementById("resultado-modelo");
+            const errorBox = document.getElementById("error-box");
+
+            const FEATURE_ORDER = ["AGE", "SEX", "BMI", "BP", "S1", "S2", "S3", "S4", "S5", "S6"];
+            const sliders = Array.from(document.querySelectorAll('input[type="range"]'));
+
+            /* ------------------------------------------------------------------ *
+             *  Badges de valor en tiempo real + relleno visual del track
+             * ------------------------------------------------------------------ */
+            function badgeText(input) {
+                if (input.dataset.sex === "1") {
+                    return parseFloat(input.value) <= 1 ? "Hombre (1)" : "Mujer (2)";
+                }
+                const decimals = parseInt(input.dataset.decimals, 10) || 0;
+                return Number(input.value).toFixed(decimals);
+            }
+
+            function fillTrack(input) {
+                const min = parseFloat(input.min);
+                const max = parseFloat(input.max);
+                const pct = ((parseFloat(input.value) - min) / (max - min)) * 100;
+                input.style.setProperty("--pct", pct + "%");
+            }
+
+            function refreshValue(input) {
+                const badge = document.getElementById("badge-" + input.id);
+                if (badge) {
+                    badge.textContent = badgeText(input);
+                    badge.classList.remove("bump");
+                    void badge.offsetWidth;   // reiniciar la animación
+                    badge.classList.add("bump");
+                }
+                fillTrack(input);
+            }
+
+            sliders.forEach(function (input) {
+                input.addEventListener("input", function () { refreshValue(input); });
+                refreshValue(input);  // estado inicial consistente
+            });
+
+            /* ------------------------------------------------------------------ *
+             *  Envío al backend
+             * ------------------------------------------------------------------ */
+            function severityStyles(level) {
+                if (level === "BAJA") {
+                    return { chip: "is-success", desc: "Riesgo bajo. La progresión estimada se mantiene dentro del rango de baja severidad." };
+                }
+                if (level === "MODERADA") {
+                    return { chip: "is-warning", desc: "Riesgo moderado. Se recomienda seguimiento clínico periódico." };
+                }
+                return { chip: "is-danger", desc: "Riesgo alto. Se recomienda atención médica prioritaria y control estricto cercano." };
+            }
+
+            function setLoading(loading) {
+                btnCalcular.disabled = loading;
+                if (loading) {
+                    const spin = document.createElement("span");
+                    spin.className = "spin";
+                    btnCalcular.prepend(spin);
+                    btnCalcular.setAttribute("data-spin", "true");
+                } else if (btnCalcular.hasAttribute("data-spin")) {
+                    btnCalcular.removeAttribute("data-spin");
+                    const spinEl = btnCalcular.querySelector(".spin");
+                    if (spinEl) spinEl.remove();
+                }
+            }
+
+            function collectPayload() {
+                const payload = {};
+                for (const key of FEATURE_ORDER) {
+                    const el = document.getElementById(key);
+                    if (el) payload[key] = parseFloat(el.value);
+                }
+                return payload;
+            }
+
+            form.addEventListener("submit", async function (evt) {
+                evt.preventDefault();
+                errorBox.hidden = true;
+                resultado.hidden = true;
+
+                setLoading(true);
+
+                try {
+                    const response = await fetch("/predict", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(collectPayload())
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.error || "Error al procesar la solicitud.");
+                    }
+
+                    const value = data.prediction;
+                    const styles = severityStyles(data.severity);
+                    const info = data.model_info || {};
+                    const metrics = data.metrics || {};
+
+                    resultadoValor.textContent = Number(value).toLocaleString("es-ES", {
+                        minimumFractionDigits: 1,
+                        maximumFractionDigits: 1
+                    }) + " (Y)";
+                    resultadoChip.textContent = "Severidad " + data.severity;
+                    resultadoChip.className = "chip " + styles.chip;
+                    resultadoDesc.textContent = styles.desc + " " + data.message;
+
+                    resultadoModelo.innerHTML = [
+                        '<span class="marker" title="Pipeline en uso">&#128736;</span>',
+                        info.label || "Predicción calculada mediante Regresión Polinomial",
+                        '<span class="mini" title="Coeficiente R² en test">R²<sup>test</sup> ' +
+                            (metrics.r2_test !== undefined ? Number(metrics.r2_test).toFixed(4) : "—") + "</span>",
+                        '<span class="mini" title="Error cuadrático medio en test">RMSE<sup>test</sup> ' +
+                            (metrics.rmse_test !== undefined ? Number(metrics.rmse_test).toFixed(2) : "—") + "</span>"
+                    ].join(" ");
+
+                    resultado.className = "card result-card is-" + styles.chip.replace("is-", "");
+                    resultado.hidden = false;
+                } catch (err) {
+                    errorBox.textContent = "❌ " + (err.message || "Error de red. Verifique que el servidor Flask esté activo.");
+                    errorBox.hidden = false;
+                } finally {
+                    setLoading(false);
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
