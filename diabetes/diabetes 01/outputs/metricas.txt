@@ -1,0 +1,7 @@
+MÉTRICAS DE EVALUACIÓN - REGRESIÓN LINEAL MÚLTIPLE
+=======================================================
+R²  (coef. determinación): 0.4526
+MSE (error cuadrático medio): 2900.19
+RMSE (raíz del error cuadrático medio): 53.85
+MAE (error absoluto medio): 42.79
+R² entrenamiento: 0.5279

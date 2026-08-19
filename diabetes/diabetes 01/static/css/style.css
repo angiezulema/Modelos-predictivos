@@ -1,0 +1,441 @@
+/* ============================================================
+   style.css - Aplicación de Predicción de Diabetes (Flask)
+   Tema médico profesional (azul / teal)
+   ============================================================ */
+
+:root {
+    --primary: #0f766e;
+    --primary-dark: #115e59;
+    --primary-light: #ccfbf1;
+    --accent: #0369a1;
+    --bg: #f0f4f8;
+    --sidebar-bg: #0f172a;
+    --sidebar-text: #cbd5e1;
+    --card-bg: #ffffff;
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --danger: #dc2626;
+    --success: #16a34a;
+    --warning: #d97706;
+    --radius: 12px;
+    --shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+}
+
+/* ---------------- Layout general ---------------- */
+.app {
+    display: flex;
+    min-height: 100vh;
+}
+
+.main {
+    flex: 1;
+    padding: 28px 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ---------------- Sidebar ---------------- */
+.sidebar {
+    width: 300px;
+    min-width: 300px;
+    background: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar-header .logo { font-size: 28px; }
+
+.sidebar-header h2 {
+    color: #ffffff;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.model-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 0.85rem;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.info-label { color: #94a3b8; }
+
+.info-value {
+    color: #ffffff;
+    text-align: right;
+    font-weight: 500;
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.nav-link {
+    display: block;
+    text-align: center;
+    padding: 10px 14px;
+    background: var(--primary);
+    color: #ffffff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.nav-link:hover { background: var(--primary-dark); }
+
+/* ---------------- Métricas del sidebar ---------------- */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.metric-card {
+    background: rgba(15, 118, 110, 0.15);
+    border: 1px solid rgba(204, 251, 241, 0.2);
+    border-radius: var(--radius);
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.metric-label {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.metric-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-light);
+}
+
+.metric-hint { font-size: 0.7rem; color: #94a3b8; }
+
+/* ---------------- Hero ---------------- */
+.hero {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    color: #ffffff;
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+}
+
+.hero h1 { font-size: 1.8rem; margin-bottom: 4px; }
+
+.hero .subtitle {
+    font-size: 1rem;
+    font-weight: 500;
+    opacity: 0.9;
+    margin-bottom: 12px;
+}
+
+.hero .description {
+    font-size: 0.9rem;
+    opacity: 0.92;
+    max-width: 850px;
+}
+
+/* ---------------- Tarjetas ---------------- */
+.card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.card-title {
+    font-size: 1.15rem;
+    color: var(--primary-dark);
+    margin-bottom: 10px;
+}
+
+.card-hint {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+/* ---------------- Sliders ---------------- */
+.slider-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px 28px;
+    margin-bottom: 20px;
+}
+
+.slider-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.slider-header label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.slider-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--primary);
+    background: var(--primary-light);
+    padding: 2px 10px;
+    border-radius: 20px;
+}
+
+.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 8px;
+    background: linear-gradient(90deg, var(--primary-light), #99f6e4);
+    outline: none;
+    cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--primary);
+    border: 3px solid #ffffff;
+    box-shadow: 0 2px 6px rgba(15, 118, 110, 0.4);
+    transition: transform 0.15s;
+}
+
+.slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+
+.slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--primary);
+    border: 3px solid #ffffff;
+    cursor: pointer;
+}
+
+.slider-limits {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* ---------------- Botón ---------------- */
+.btn-primary {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 12px rgba(15, 118, 110, 0.35);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(15, 118, 110, 0.45);
+}
+
+.btn-primary:active { transform: translateY(0); }
+
+/* ---------------- Resultado ---------------- */
+.prediction-placeholder {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-style: italic;
+    padding: 12px 0;
+}
+
+.prediction-card {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    background: linear-gradient(135deg, #f0fdfa, #e0f2fe);
+    border: 2px solid var(--primary-light);
+    border-radius: var(--radius);
+    padding: 22px;
+}
+
+.prediction-number {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1;
+}
+
+.prediction-caption {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.prediction-label { font-weight: 600; color: var(--text); }
+
+.interpretacion { margin-top: 12px; }
+
+.badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.badge-bajo { background: var(--success); }
+.badge-moderado { background: var(--warning); }
+.badge-alto { background: #ea580c; }
+.badge-muy-alto { background: var(--danger); }
+.badge-baja { background: var(--success); }
+.badge-media { background: var(--warning); }
+.badge-alta { background: var(--danger); }
+
+.interpretacion-desc { margin-top: 6px; font-size: 0.9rem; color: var(--text-muted); }
+
+/* ---------------- Tabla ---------------- */
+.table-wrapper { overflow-x: auto; }
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.data-table th {
+    text-align: left;
+    padding: 10px 12px;
+    background: var(--primary);
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.data-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.data-table tbody tr:nth-child(even) { background: #f8fafc; }
+
+.data-table tbody tr:hover { background: var(--primary-light); }
+
+/* ---------------- Rendimiento del modelo ---------------- */
+.model-performance {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.chart-box {
+    text-align: center;
+}
+
+.chart-box img {
+    width: 100%;
+    max-height: 380px;
+    object-fit: contain;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #ffffff;
+}
+
+.chart-box p {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* ---------------- Página EDA ---------------- */
+.eda-metrics .metric-value { font-size: 1.2rem; }
+
+.eda-card .eda-image img {
+    width: 100%;
+    max-height: 640px;
+    object-fit: contain;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #ffffff;
+}
+
+/* ---------------- Footer ---------------- */
+.footer {
+    text-align: center;
+    padding: 16px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+/* ---------------- Responsive ---------------- */
+@media (max-width: 900px) {
+    .app { flex-direction: column; }
+    .sidebar {
+        width: 100%;
+        min-width: auto;
+        height: auto;
+        position: static;
+        flex-direction: column;
+    }
+    .slider-grid { grid-template-columns: 1fr; }
+    .model-performance { grid-template-columns: 1fr; }
+    .main { padding: 20px; }
+}
+
+@media (max-width: 600px) {
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .hero h1 { font-size: 1.4rem; }
+}

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis Exploratorio - Diabetes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="app">
+
+    <!-- ======================= SIDEBAR ======================= -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <span class="logo">📊</span>
+            <h2>EDA</h2>
+        </div>
+        <div class="model-info">
+            <div class="info-row">
+                <span class="info-label">Dataset</span>
+                <span class="info-value">Diabetes (442 filas × 11 col.)</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Valores nulos</span>
+                <span class="info-value">Ninguno</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Outliers (IQR)</span>
+                <span class="info-value">40 (conservados)</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Multicolinealidad</span>
+                <span class="info-value">Alta en S1/S2 (VIF &gt; 10)</span>
+            </div>
+        </div>
+
+        <div class="metrics-grid eda-metrics">
+            <div class="metric-card">
+                <span class="metric-label">R²</span>
+                <span class="metric-value">0.453</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-label">RMSE</span>
+                <span class="metric-value">53.85</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-label">MAE</span>
+                <span class="metric-value">42.79</span>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <a class="nav-link" href="{{ url_for('index') }}">🔮 Volver a la Predicción</a>
+        </div>
+    </aside>
+
+    <!-- ======================= CONTENIDO PRINCIPAL ======================= -->
+    <main class="main">
+
+        <header class="hero">
+            <h1>Análisis Exploratorio de Datos</h1>
+            <p class="subtitle">Dataset de Diabetes (Scikit-learn) · Regresión Lineal Múltiple</p>
+            <p class="description">
+                Exploración visual y estadística de las 10 variables basales y su relación
+                con la variable objetivo <strong>Y</strong> (progresión de la enfermedad a un año).
+            </p>
+        </header>
+
+        {% for img in images %}
+        <section class="card eda-card">
+            <h2 class="card-title">
+                {% if img == "histogramas.png" %}📊 Histogramas de cada variable
+                {% elif img == "boxplots.png" %}📦 Boxplots (detección de outliers)
+                {% elif img == "pairplot.png" %}🔗 Scatter matrix / pairplot
+                {% elif img == "heatmap_correlacion.png" %}🔥 Heatmap de correlación
+                {% elif img == "distribucion_target.png" %}🎯 Distribución de la variable objetivo (Y)
+                {% elif img == "real_vs_predicho.png" %}📈 Valores reales vs predichos
+                {% elif img == "residuos.png" %}🧪 Análisis de residuos
+                {% elif img == "importancia_variables.png" %}⚖️ Importancia de las variables (coeficientes)
+                {% else %}{{ img }}{% endif %}
+            </h2>
+            <div class="eda-image">
+                <img src="{{ url_for('outputs', filename=img) }}" alt="{{ img }}">
+            </div>
+        </section>
+        {% endfor %}
+
+        <!-- Tabla de multicolinealidad (VIF) -->
+        <section class="card">
+            <h2 class="card-title">🔬 Análisis de multicolinealidad (VIF)</h2>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Variable</th>
+                            <th>VIF</th>
+                            <th>Interpretación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in vif %}
+                        <tr>
+                            <td>{{ row.Variable }}</td>
+                            <td>{{ row.VIF }}</td>
+                            <td>
+                                {% if row.VIF > 10 %}
+                                    <span class="badge badge-alta">Alta multicolinealidad</span>
+                                {% elif row.VIF > 5 %}
+                                    <span class="badge badge-media">Moderada</span>
+                                {% else %}
+                                    <span class="badge badge-baja">Baja</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Tabla de outliers -->
+        <section class="card">
+            <h2 class="card-title">🎯 Outliers detectados (método IQR)</h2>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Variable</th>
+                            <th>Outliers</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in outliers %}
+                        <tr>
+                            <td>{{ row.Variable }}</td>
+                            <td>{{ row.Outliers }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <p class="card-hint">
+                Los outliers se conservan en el modelo: la regresión lineal básica es
+                sensible a ellos, pero se mantienen para respetar la distribución real del dataset.
+            </p>
+        </section>
+
+        <footer class="footer">
+            <p>Casos de Estudio - Diabetes (Scikit-learn) · Regresión Lineal Múltiple · Flask</p>
+        </footer>
+
+    </main>
+</div>
+
+</body>
+</html>

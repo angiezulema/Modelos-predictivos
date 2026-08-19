@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predicción de Progresión de Diabetes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="app">
+
+    <!-- ======================= SIDEBAR ======================= -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <span class="logo">🩺</span>
+            <h2>Modelo</h2>
+        </div>
+
+        <div class="model-info">
+            <div class="info-row">
+                <span class="info-label">Algoritmo</span>
+                <span class="info-value">Regresión Lineal Múltiple</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Biblioteca</span>
+                <span class="info-value">Scikit-learn</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Muestras</span>
+                <span class="info-value">442 (80/20)</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Variables</span>
+                <span class="info-value">10 + objetivo (Y)</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Escalado</span>
+                <span class="info-value">StandardScaler</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Semilla</span>
+                <span class="info-value">random_state = 42</span>
+            </div>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <span class="metric-label">R²</span>
+                <span class="metric-value">{{ "%.3f"|format(metrics.r2) }}</span>
+                <span class="metric-hint">Coef. determinación</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-label">RMSE</span>
+                <span class="metric-value">{{ "%.2f"|format(metrics.rmse) }}</span>
+                <span class="metric-hint">Raíz error cuadr. medio</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-label">MAE</span>
+                <span class="metric-value">{{ "%.2f"|format(metrics.mae) }}</span>
+                <span class="metric-hint">Error absoluto medio</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-label">MSE</span>
+                <span class="metric-value">{{ "%.0f"|format(metrics.mse) }}</span>
+                <span class="metric-hint">Error cuadrático medio</span>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <a class="nav-link" href="{{ url_for('eda') }}">📊 Ver Análisis Exploratorio</a>
+        </div>
+    </aside>
+
+    <!-- ======================= CONTENIDO PRINCIPAL ======================= -->
+    <main class="main">
+
+        <!-- Cabecera -->
+        <header class="hero">
+            <h1>Predicción de Progresión de Diabetes</h1>
+            <p class="subtitle">Regresión Lineal Múltiple</p>
+            <p class="description">
+                Este modelo predice la <strong>progresión cuantitativa de la enfermedad
+                un año después del inicio</strong> a partir de 10 variables basales:
+                edad, sexo, índice de masa corporal, presión arterial media y
+                6 mediciones de suero sanguíneo (S1–S6).
+            </p>
+        </header>
+
+        <!-- Tarjeta del formulario -->
+        <section class="card form-card">
+            <h2 class="card-title">📋 Variables del paciente</h2>
+            <p class="card-hint">
+                Ajusta los deslizadores según los valores del paciente. La predicción
+                se actualiza automáticamente y también puedes usar el botón.
+            </p>
+
+            <div class="slider-grid" id="slider-grid">
+                {% for col in features %}
+                <div class="slider-item" data-col="{{ col }}">
+                    <div class="slider-header">
+                        <label for="input-{{ col }}">{{ labels[col] }}</label>
+                        <span class="slider-value" id="value-{{ col }}">{{ ranges[col].default }}</span>
+                    </div>
+                    <input
+                        type="range"
+                        id="input-{{ col }}"
+                        class="slider"
+                        min="{{ ranges[col].min }}"
+                        max="{{ ranges[col].max }}"
+                        step="{{ ranges[col].step }}"
+                        value="{{ ranges[col].default }}"
+                        data-label="{{ labels[col] }}"
+                        data-unit="{{ units[col] }}"
+                    >
+                    <div class="slider-limits">
+                        <span>{{ ranges[col].min }}</span>
+                        <span>{{ ranges[col].max }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <button id="btn-predict" class="btn-primary">🔮 Predecir Progresión</button>
+        </section>
+
+        <!-- Resultado de la predicción -->
+        <section class="card result-section">
+            <h2 class="card-title">📈 Resultado de la Predicción</h2>
+            <div id="prediction-result" class="prediction-placeholder">
+                Ajusta los controles y presiona "Predecir Progresión".
+            </div>
+            <div id="interpretacion" class="interpretacion"></div>
+        </section>
+
+        <!-- Valores ingresados -->
+        <section class="card">
+            <h2 class="card-title">📝 Valores ingresados por el usuario</h2>
+            <div class="table-wrapper">
+                <table class="data-table" id="values-table">
+                    <thead>
+                        <tr>
+                            <th>Variable</th>
+                            <th>Valor</th>
+                            <th>Unidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for col in features %}
+                        <tr>
+                            <td>{{ labels[col] }}</td>
+                            <td id="table-{{ col }}">{{ ranges[col].default }}</td>
+                            <td>{{ units[col] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Rendimiento del modelo -->
+        <section class="card">
+            <h2 class="card-title">🎯 Rendimiento del modelo</h2>
+            <div class="model-performance">
+                <div class="chart-box">
+                    <img
+                        src="{{ url_for('outputs', filename='importancia_variables.png') }}"
+                        alt="Importancia de las variables"
+                    >
+                    <p>Importancia de cada variable (coeficientes)</p>
+                </div>
+                <div class="chart-box">
+                    <img
+                        src="{{ url_for('outputs', filename='real_vs_predicho.png') }}"
+                        alt="Valores reales vs predichos"
+                    >
+                    <p>Valores reales vs predichos (conjunto de prueba)</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>Casos de Estudio - Diabetes (Scikit-learn) · Regresión Lineal Múltiple · Flask</p>
+        </footer>
+
+    </main>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
