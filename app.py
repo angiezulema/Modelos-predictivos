@@ -38,8 +38,9 @@ with gr.Blocks(title="Modelos Predictivos") as demo:
 
 
 if __name__ == "__main__":
+    puerto = int(os.getenv("PORT", 7860))
     demo.queue().launch(
-        server_name="0.0.0.0",
-        server_port=int(os.getenv("PORT", 7860)),
+        server_name="0.0.0.0" if os.getenv("PORT") else "127.0.0.1",
+        server_port=puerto,
         theme=gr.themes.Soft(),
     )
