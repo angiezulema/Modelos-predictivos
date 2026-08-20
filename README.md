@@ -10,8 +10,8 @@ La interfaz principal (`app.py`) tiene 3 pestañas interactivas para probar cada
 | Pestaña | Caso | Modelos disponibles |
 |---|---|---|
 | 🏠 California Housing | Precio mediano de vivienda | Regresión Lineal Múltiple + Regresión Polinomial (grado 2) |
-| 🍷 Wine Quality | Calidad del vino tinto (0-10) | Regresión Lineal Múltiple |
-| 🩸 Diabetes | Progresión de la enfermedad | Regresión Lineal Múltiple |
+| 🍷 Wine Quality | Calidad del vino tinto (0-10) | Regresión Lineal Múltiple + Regresión Polinomial (grado 2) |
+| 🩸 Diabetes | Progresión de la enfermedad | Regresión Lineal Múltiple + Regresión Polinomial (grado 2) |
 
 ```bash
 pip install -r requirements.txt
@@ -34,15 +34,17 @@ Modelos-predictivos/
 │   ├── housing_model_poly.joblib      # Modelo Polinomial (grado 2)
 │   └── archive/housing.csv
 ├── wine-quality/
-│   ├── wine_app.py            # Pestaña Wine Quality
-│   ├── wine_predictor.py      # Entrenamiento + modelo
-│   ├── wine_model.joblib
+│   ├── wine_app.py            # Pestaña Wine Quality (selector Lineal/Polinomial)
+│   ├── wine_predictor.py      # Entrenamiento lineal y polinomial
+│   ├── wine_model.joblib             # Modelo Lineal Múltiple
+│   ├── wine_model_poly.joblib        # Modelo Polinomial (grado 2)
 │   └── winequality-red.csv    # Dataset UCI (vino tinto)
 └── diabetes/
-    ├── diabetes_app.py        # Pestaña Diabetes
-    ├── diabetes_predictor.py  # Entrenamiento (sklearn.datasets.load_diabetes)
-    ├── diabetes_model.joblib
-    ├── diabetes.csv           # Dataset generado (valores reales restaurados)
+    ├── diabetes_app.py        # Pestaña Diabetes (selector Lineal/Polinomial)
+    ├── diabetes_predictor.py  # Entrenamiento lineal y polinomial
+    ├── diabetes_model.joblib         # Modelo Lineal Múltiple
+    ├── diabetes_model_poly.joblib    # Modelo Polinomial (grado 2)
+    ├── diabetes_raw.csv       # Dataset con valores reales (sklearn load_diabetes)
     ├── diabetes 01/                     # Proyecto extra Flask (+ EDA)
     └── diabetes-regresion-polinomial/   # Proyecto extra Streamlit (Polinomial + Ridge)
 ```
