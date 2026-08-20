@@ -1,17 +1,21 @@
+import os
 import sys
-import joblib
-import pandas as pd
 
 sys.stdout.reconfigure(encoding="utf-8")
+import joblib
+import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import OneHotEncoder, PolynomialFeatures
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score, root_mean_squared_error
 
-CSV_PATH = "archive/housing.csv"
-MODEL_PATH = "housing_model.joblib"
+BASE = os.path.dirname(os.path.abspath(__file__))
+CSV_PATH = os.path.join(BASE, "archive", "housing.csv")
+MODEL_PATH = os.path.join(BASE, "housing_model.joblib")
+POLY_PATH = os.path.join(BASE, "housing_model_poly.joblib")
+POLY_DEGREE = 2
 
 NUMERIC_FEATURES = [
     "longitude",
@@ -47,23 +51,26 @@ def cargar_datos():
     return df
 
 
-def obtener_pipeline():
+def obtener_pipeline(polinomial=False, grado=POLY_DEGREE):
     preprocessor = ColumnTransformer(
         transformers=[
             ("cat", OneHotEncoder(handle_unknown="ignore"), CATEGORICAL_FEATURES),
         ],
         remainder="passthrough",
     )
-    pipeline = Pipeline(
-        steps=[
-            ("preprocess", preprocessor),
-            ("regresion", LinearRegression()),
-        ]
-    )
-    return pipeline
+    pasos = [("preprocess", preprocessor)]
+    if polinomial:
+        pasos.append(("poly", PolynomialFeatures(degree=grado, include_bias=False)))
+    pasos.append(("regresion", LinearRegression()))
+    return Pipeline(steps=pasos)
 
 
-def entrenar():
+def _descripcion(polinomial):
+    return "REGRESIÓN POLINOMIAL (GRADO 2)" if polinomial else "REGRESIÓN LINEAL MÚLTIPLE"
+
+
+def entrenar(polinomial=False, grado=POLY_DEGREE):
+    ruta = POLY_PATH if polinomial else MODEL_PATH
     print(f"Cargando datos desde {CSV_PATH} ...")
     df = cargar_datos()
     print(f"Registros cargados: {len(df)}")
@@ -75,9 +82,9 @@ def entrenar():
         X, y, test_size=0.2, random_state=42
     )
 
-    pipeline = obtener_pipeline()
+    pipeline = obtener_pipeline(polinomial=polinomial, grado=grado)
     pipeline.fit(X_train, y_train)
-    joblib.dump(pipeline, MODEL_PATH)
+    joblib.dump(pipeline, ruta)
 
     y_pred_train = pipeline.predict(X_train)
     y_pred_test = pipeline.predict(X_test)
@@ -88,7 +95,7 @@ def entrenar():
     rmse_test = root_mean_squared_error(y_test, y_pred_test)
 
     print("\n" + "=" * 56)
-    print("REGRESIÓN LINEAL MÚLTIPLE - RESULTADOS")
+    print(_descripcion(polinomial) + " - RESULTADOS")
     print("=" * 56)
     print(f"Train   | R² = {r2_train:.4f} | RMSE = ${rmse_train:,.2f}")
     print(f"Test    | R² = {r2_test:.4f} | RMSE = ${rmse_test:,.2f}")
@@ -96,25 +103,30 @@ def entrenar():
 
     reg = pipeline.named_steps["regresion"]
     print(f"Intercepto (b0): ${reg.intercept_:,.2f}")
-    print("\nCoeficientes por variable:")
-    cat_names = pipeline.named_steps["preprocess"].named_transformers_[
-        "cat"
-    ].get_feature_names_out()
-    num_names = [c for c in X.columns if c not in CATEGORICAL_FEATURES]
-    all_names = list(cat_names) + num_names
-    for nombre, coef in zip(all_names, reg.coef_):
-        print(f"  {nombre:20s} → {coef:+,.2f}")
+    if not polinomial:
+        print("\nCoeficientes por variable:")
+        cat_names = pipeline.named_steps["preprocess"].named_transformers_[
+            "cat"
+        ].get_feature_names_out()
+        num_names = [c for c in X.columns if c not in CATEGORICAL_FEATURES]
+        all_names = list(cat_names) + num_names
+        for nombre, coef in zip(all_names, reg.coef_):
+            print(f"  {nombre:20s} → {coef:+,.2f}")
+    else:
+        n_coef = len(reg.coef_)
+        print(f"Características polinomiales (grado {grado}): {n_coef}")
 
-    print(f"\nModelo guardado en {MODEL_PATH}")
+    print(f"\nModelo guardado en {ruta}")
     return pipeline
 
 
-def cargar_modelo():
+def cargar_modelo(polinomial=False):
+    ruta = POLY_PATH if polinomial else MODEL_PATH
     try:
-        return joblib.load(MODEL_PATH)
-    except FileNotFoundError:
-        print(f"No se encontró el modelo {MODEL_PATH}. Entrenando de nuevo...")
-        return entrenar()
+        return joblib.load(ruta)
+    except (FileNotFoundError, EOFError, ValueError):
+        print(f"No se encontró el modelo {ruta}. Entrenando de nuevo...")
+        return entrenar(polinomial=polinomial)
 
 
 def leer_float(mensaje, minimo, maximo, sugerido):
@@ -171,10 +183,13 @@ def predecir(pipeline):
 
 
 def main():
+    polinomial = "--polinomial" in sys.argv
     if "--entrenar" in sys.argv:
-        pipeline = entrenar()
-    else:
-        pipeline = cargar_modelo()
+        entrenar(polinomial=polinomial)
+        print("\nEntrenamiento completado.")
+        return
+
+    pipeline = cargar_modelo(polinomial=polinomial)
 
     print("\n💡 Escribe 'exit' en cualquier campo numérico para salir.")
     while True:
